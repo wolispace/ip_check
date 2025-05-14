@@ -7,7 +7,12 @@ $targetIPs = @{
     "192.168.1.100" = "Back 1 WiFi"
     "192.168.1.101" = "Driveway 2 WiFi"
     "192.168.1.102" = "Front 3 WiFi"
-    "192.168.1.103" = "Side 4 LAN"
+    "be:51:fe:70:c0:17" = "Side 4 LAN"
+
+    "192.168.86.23" = "LIFX 1 IP"
+    "d0-73-d5-56-d5-2a" = "LIFX 1 MAC"
+
+
 }
 
 $intervalSeconds = 30
@@ -18,7 +23,11 @@ while ($true) {
         $deviceName = $targetIPs[$ip]
         $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
         try {
-            Test-Connection -ComputerName $ip -Count 1 -ErrorAction Stop | Out-Null
+            if ($ip -match ":") {
+                 Get-NetNeighbor | Where-Object { $_.LinkLayerAddress -eq $ip }
+            } else {
+                Test-Connection -ComputerName $ip -Count 1 -ErrorAction Stop | Out-Null
+            }
             $logEntry = "$timestamp,$ip,OK  ,$deviceName"
         } catch {
             $logEntry = "$timestamp,$ip,FAIL,$deviceName"
