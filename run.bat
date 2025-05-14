@@ -1,0 +1,1 @@
+powershell -ExecutionPolicy Bypass -File ip_check.ps1
