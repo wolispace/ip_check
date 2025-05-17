@@ -3,19 +3,18 @@
 # run with: powershell -ExecutionPolicy Bypass -File ip_check.ps1
 # or simply run.bat :-)
 #
+
+# example of mac instead of ip4: "be:51:fe:70:c0:17" = "Side 4 LAN"
+
 $targetIPs = @{
-    "192.168.1.100" = "Back 1 WiFi"
-    "192.168.1.101" = "Driveway 2 WiFi"
+    "192.168.1.103" = "Back 1 WiFi"
+    "192.168.1.104" = "Driveway 2 WiFi"
     "192.168.1.102" = "Front 3 WiFi"
-    "be:51:fe:70:c0:17" = "Side 4 LAN"
-
-    "192.168.86.23" = "LIFX 1 IP"
-    "d0-73-d5-56-d5-2a" = "LIFX 1 MAC"
-
-
+    "192.168.1.100" = "Side 4 LAN"
+    "192.168.1.111" = "Holman hub"
 }
 
-$intervalSeconds = 30
+$intervalSeconds = 60
 $logFile = "ip_check.csv"
 
 while ($true) {
@@ -28,9 +27,9 @@ while ($true) {
             } else {
                 Test-Connection -ComputerName $ip -Count 1 -ErrorAction Stop | Out-Null
             }
-            $logEntry = "$timestamp,$ip,OK  ,$deviceName"
+            $logEntry = "$timestamp,OK  ,$ip,$deviceName"
         } catch {
-            $logEntry = "$timestamp,$ip,FAIL,$deviceName"
+            $logEntry = "$timestamp,FAIL,$ip,$deviceName"
         }
 
         # Display in console
@@ -39,5 +38,6 @@ while ($true) {
         # Append to log file
         Add-Content -Path $logFile -Value $logEntry
     }
+    Write-Host ""
     Start-Sleep -Seconds $intervalSeconds
 }
